@@ -1,19 +1,25 @@
-From fb5bf9d67cc3a0cd4ff39e8ac537898a0e83a875 Mon Sep 17 00:00:00 2001
+From 02e79a91f97f18f77706cbe7aab42eb6157be0fd Mon Sep 17 00:00:00 2001
 From: Preston Petrie <preston159@users.noreply.github.com>
 Date: Fri, 9 May 2025 14:31:42 -0500
 Subject: [PATCH 2/6] add software
 
 ---
- Containerfile        | 11 ++++++++++-
- build_files/build.sh | 37 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 47 insertions(+), 1 deletion(-)
- create mode 100755 build_files/build.sh
+ Containerfile | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
 diff --git a/Containerfile b/Containerfile
-index 1509f2f0..ee585f6f 100644
+index cebab8b3..e760c97d 100644
 --- a/Containerfile
 +++ b/Containerfile
-@@ -399,6 +399,15 @@ RUN --mount=type=cache,dst=/var/cache \
+@@ -48,6 +48,7 @@ FROM ghcr.io/ublue-os/akmods-extra:${KERNEL_FLAVOR}-${FEDORA_VERSION}-${KERNEL_V
+ 
+ FROM scratch AS ctx
+ COPY build_files /
++COPY ../build.sh /build.sh
+ 
+ ################
+ # DESKTOP BUILDS
+@@ -400,6 +401,15 @@ RUN --mount=type=cache,dst=/var/cache \
      chmod +x /usr/libexec/bazzite-yafti-launcher && \
      /ctx/cleanup
  
@@ -29,7 +35,7 @@ index 1509f2f0..ee585f6f 100644
  # Configure KDE & GNOME
  RUN --mount=type=cache,dst=/var/cache \
      --mount=type=cache,dst=/var/log \
-@@ -434,7 +443,7 @@ RUN --mount=type=cache,dst=/var/cache \
+@@ -435,7 +445,7 @@ RUN --mount=type=cache,dst=/var/cache \
              plasma-welcome-fedora \
              plasma-browser-integration \
              kcharselect \
@@ -38,49 +44,6 @@ index 1509f2f0..ee585f6f 100644
          sed -i '/<entry name="launchers" type="StringList">/,/<\/entry>/ s/<default>[^<]*<\/default>/<default>preferred:\/\/browser,applications:steam.desktop,applications:net.lutris.Lutris.desktop,applications:org.gnome.Ptyxis.desktop,applications:org.kde.discover.desktop,preferred:\/\/filemanager<\/default>/' /usr/share/plasma/plasmoids/org.kde.plasma.taskmanager/contents/config/main.xml && \
          sed -i '/<entry name="favorites" type="StringList">/,/<\/entry>/ s/<default>[^<]*<\/default>/<default>preferred:\/\/browser,steam.desktop,net.lutris.Lutris.desktop,systemsettings.desktop,org.kde.dolphin.desktop,org.kde.kate.desktop,org.gnome.Ptyxis.desktop,org.kde.discover.desktop,system-update.desktop<\/default>/' /usr/share/plasma/plasmoids/org.kde.plasma.kickoff/contents/config/main.xml && \
          sed -i 's@\[Desktop Action new-window\]@\[Desktop Action new-window\]\nX-KDE-Shortcuts=Ctrl+Alt+T@g' /usr/share/applications/org.gnome.Ptyxis.desktop && \
-diff --git a/build_files/build.sh b/build_files/build.sh
-new file mode 100755
-index 00000000..86227335
---- /dev/null
-+++ b/build_files/build.sh
-@@ -0,0 +1,37 @@
-+#!/bin/bash
-+set -euxo pipefail
-+
-+# install VirtualBox using script from bazzite-virtualbox
-+curl -L -o "/tmp/vbox.sh" "https://raw.githubusercontent.com/Preston159/bazzite-virtualbox/refs/heads/testing/build.sh"
-+chmod +x /tmp/vbox.sh
-+/tmp/vbox.sh
-+
-+# install hyprland
-+dnf -y copr enable solopasha/hyprland
-+dnf install -y hyprland
-+dnf install -y hyprland-qtutils
-+dnf install -y hyprlock
-+dnf install -y hyprland-uwsm
-+dnf install -y hyprpolkitagent
-+dnf install -y xdg-desktop-portal-hyprland
-+dnf install -y rofi
-+dnf install -y pavucontrol
-+dnf install -y waybar
-+dnf install --setopt=install_weak_deps=false -y waypaper
-+
-+# install development tools
-+curl -L -o /tmp/vscode-x64.rpm 'https://code.visualstudio.com/sha/download?build=stable&os=linux-rpm-x64'
-+dnf install -y /tmp/vscode-x64.rpm
-+dnf install -y docker-cli
-+dnf install -y kate
-+
-+# install cli tools
-+dnf install -y zsh
-+dnf install -y zoxide
-+
-+# misc
-+dnf -y copr enable ilyaz/LACT
-+dnf install -y \
-+    waypipe \
-+    wayvnc \
-+    lact
 -- 
 2.49.0
 

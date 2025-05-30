@@ -1,4 +1,4 @@
-From 81d758809938f43bb81d2231d306b86b29adda22 Mon Sep 17 00:00:00 2001
+From cc93a986239f47b6b685297a6044893562fd7a42 Mon Sep 17 00:00:00 2001
 From: Preston Petrie <preston159@users.noreply.github.com>
 Date: Mon, 19 May 2025 19:41:14 -0500
 Subject: [PATCH 6/6] Revert "chore: Hide toggle-updates by default"
